@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.35.0",
     "@types/bcryptjs": "^2.4.3",
     "@types/node": "20.6.0",
     "@types/react": "18.2.21",
@@ -30,5 +31,8 @@
     "typescript": "5.2.2",
     "zod": "^3.22.2",
     "zod-validation-error": "^1.5.0"
+  },
+  "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^4.34.1"
   }
 }

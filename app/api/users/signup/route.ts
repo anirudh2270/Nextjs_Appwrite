@@ -3,29 +3,25 @@ import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/userModal';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 
 connect();
 
 const Signup_schema = z.object({
-  username: z.string(),
-  email: z.string(),
-  password: z.string(),
+  username: z.string().nonempty(),
+  email: z.string().nonempty(),
+  password: z.string().nonempty(),
 });
 
 export async function POST(req: NextRequest) {
   try {
     const reqBody = await req.json();
     const { username, email, password } = reqBody;
-    console.log(reqBody);
 
     // check if the user already exists
     try {
       Signup_schema.parse({ username, email, password });
     } catch (err) {
-      const validationError = fromZodError(err);
-      console.log(validationError);
-      return NextResponse.json({ error: validationError }, { status: 400 });
+      return NextResponse.json({ error: err }, { status: 400 });
     }
 
     const user = await User.findOne({ email });
@@ -41,14 +37,16 @@ export async function POST(req: NextRequest) {
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
 
-    await User.create({
+    const new_user = await User.create({
       username,
       email,
       password: hash,
     });
 
+    await new_user.save();
+
     return NextResponse.json(
-      { message: 'User created successfully' },
+      { message: 'User created successfully', success: true },
       { status: 200 }
     );
   } catch (error) {

@@ -1,8 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { PostRequest } from '@/utils/axios_instance';
+import { Toaster } from 'react-hot-toast';
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -11,17 +13,18 @@ export default function SignupPage() {
     password: '',
   });
 
-  const handleForm = (e) => {
-    e.preventDefault();
-    axios
-      .post('api/signup/route', form)
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: (e) => {
+      e.preventDefault();
+      return PostRequest('/api/users/signup', form);
+    },
+
+    onSuccess: () => {
+      router.push('/login');
+    },
+  });
 
   return (
     <div>
@@ -33,7 +36,7 @@ export default function SignupPage() {
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <form className='space-y-6' onSubmit={(e) => handleForm(e)}>
+          <form className='space-y-6' onSubmit={mutation.mutate}>
             <div>
               <label
                 htmlFor='email'
@@ -47,7 +50,6 @@ export default function SignupPage() {
                   name='username'
                   type='text'
                   autoComplete='text'
-                  required
                   onChange={(e) =>
                     setForm({ ...form, username: e.target.value })
                   }
@@ -98,7 +100,7 @@ export default function SignupPage() {
                   name='password'
                   type='password'
                   autoComplete='current-password'
-                  required
+                  // required
                   onChange={(e) => {
                     setForm({ ...form, password: e.target.value });
                   }}
@@ -128,6 +130,7 @@ export default function SignupPage() {
           </p>
         </div>
       </div>
+      <Toaster position='top-center' reverseOrder={false} />
     </div>
   );
 }
