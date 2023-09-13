@@ -12,15 +12,11 @@ export const throw_error = (err) => {
     }
   }
 
-  if (error.info.error) {
+  if (typeof error.info.error == 'string') {
     toast.error(error.info.error);
   }
 
   switch (error.status) {
-    case 500:
-      toast.error(error.info.error || 'Something went wrong');
-      break;
-
     case 401:
       window.location.replace('/login');
       break;
@@ -44,7 +40,7 @@ export async function GetRequest(url) {
       }
     });
 }
-export async function PostRequest(url, data) {
+export async function PostRequest(url, data = {}) {
   await axios
     .post(url, data)
     .then((res) => {

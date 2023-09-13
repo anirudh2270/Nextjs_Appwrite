@@ -1,10 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { PostRequest } from '@/utils/axios_instance';
 import { Toaster } from 'react-hot-toast';
+import { hasCookie } from 'cookies-next';
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -14,6 +15,12 @@ export default function SignupPage() {
   });
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (hasCookie('Token')) {
+      router.push('/');
+    }
+  }, [router]);
 
   const mutation = useMutation({
     mutationFn: (e) => {
@@ -111,10 +118,11 @@ export default function SignupPage() {
 
             <div>
               <button
+                disabled={mutation.isLoading}
                 type='submit'
                 className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
               >
-                Sign in
+                {mutation.isLoading ? 'Processing' : 'Sign in'}
               </button>
             </div>
           </form>

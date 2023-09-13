@@ -22,10 +22,14 @@ const userModal = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  forgotPasswordToken: String,
-  forgotPasswordTokenExpiry: Date,
-  verifyToken: String,
-  verifyTokenExpiry: Date,
+  forgotPasswordToken: {
+    type: String,
+    default: null,
+  },
+  verifyToken: {
+    type: String,
+    default: null,
+  },
 });
 
 const UserModal =
