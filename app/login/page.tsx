@@ -1,12 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { PostRequest } from '@/utils/axios_instance';
 import { Toaster } from 'react-hot-toast';
 import Link from 'next/link';
-import { hasCookie } from 'cookies-next';
+import { axios_instance } from '@/utils/axios_instance';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,19 +15,14 @@ export default function LoginPage() {
     password: '',
   });
 
-  useEffect(() => {
-    if (hasCookie('Token')) {
-      router.push('/');
-    }
-  }, [router]);
-
   const mutation = useMutation({
-    mutationFn: (e) => {
+    mutationFn: (e: React.SyntheticEvent) => {
       e.preventDefault();
-      return PostRequest('/api/users/login', form);
+      return axios_instance.post('/api/users/login', form);
     },
 
-    onSuccess: () => {
+    onSuccess: (data) => {
+      localStorage.setItem('email', data.data.email);
       router.push('/');
     },
   });

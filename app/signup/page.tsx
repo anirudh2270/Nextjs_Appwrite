@@ -1,11 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { PostRequest } from '@/utils/axios_instance';
 import { Toaster } from 'react-hot-toast';
-import { hasCookie } from 'cookies-next';
+import { axios_instance } from '@/utils/axios_instance';
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -16,16 +15,10 @@ export default function SignupPage() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (hasCookie('Token')) {
-      router.push('/');
-    }
-  }, [router]);
-
   const mutation = useMutation({
     mutationFn: (e) => {
       e.preventDefault();
-      return PostRequest('/api/users/signup', form);
+      return axios_instance.post('/api/users/signup', form);
     },
 
     onSuccess: () => {

@@ -28,7 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "utils/axios_instance.jsx",
-    "utils/axios_instance.js"
+    "utils/axios_instance.js",
+    "middleware.js"
   ],
   "exclude": ["node_modules"]
 }

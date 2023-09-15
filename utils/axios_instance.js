@@ -1,8 +1,23 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+export const axios_instance = axios.create();
+
+axios_instance.interceptors.response.use(
+  function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    return response;
+  },
+  function (error) {
+    console.log(error);
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    throw_error(error);
+  }
+);
+
 export const throw_error = (err) => {
   const error = new Error('An error occurred while fetching the data.');
+
   error.info = err.response.data;
   error.status = err.response.status;
 
@@ -18,6 +33,7 @@ export const throw_error = (err) => {
 
   switch (error.status) {
     case 401:
+      localStorage.removeItem('email');
       window.location.replace('/login');
       break;
 
@@ -27,28 +43,3 @@ export const throw_error = (err) => {
 
   throw error;
 };
-
-export async function GetRequest(url) {
-  await axios
-    .get(url)
-    .then((res) => {
-      return res.data;
-    })
-    .catch(function (err) {
-      if (err.response) {
-        throw_error(err);
-      }
-    });
-}
-export async function PostRequest(url, data = {}) {
-  await axios
-    .post(url, data)
-    .then((res) => {
-      return res.data;
-    })
-    .catch(function (err) {
-      if (err.response) {
-        throw_error(err);
-      }
-    });
-}

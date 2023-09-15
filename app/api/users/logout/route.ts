@@ -13,6 +13,7 @@ export async function POST() {
     const decoded_data = jwt.decode(cookie_token?.value);
 
     await User.updateOne({ email: decoded_data.data }, { verifyToken: null });
+    cookies().delete('Token');
 
     return NextResponse.json(
       { message: 'Logout Successfull' },

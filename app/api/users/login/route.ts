@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/userModal';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-var jwt = require('jsonwebtoken');
+import * as jose from 'jose';
 import { cookies } from 'next/headers';
 
 connect();
@@ -48,13 +48,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = jwt.sign(
-      {
-        exp: Math.floor(Date.now() / 1000) + 60 * 60,
-        data: email,
-      },
-      process.env.TOKEN_SECRET
-    );
+    const secret = new TextEncoder().encode(process.env.TOKEN_SECRET);
+    const alg = 'HS256';
+
+    const token = await new jose.SignJWT({ 'urn:example:claim': true })
+      .setProtectedHeader({ alg })
+      .setIssuedAt()
+      .sign(secret);
 
     await User.updateOne(
       { email },
@@ -66,9 +66,13 @@ export async function POST(req: NextRequest) {
     cookies().set({
       name: 'Token',
       value: token,
+      maxAge: 60 * 60,
     });
 
-    return NextResponse.json({ message: 'Login Successfull' }, { status: 200 });
+    return NextResponse.json(
+      { message: 'Login Successfull', email: email },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
