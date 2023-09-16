@@ -5,12 +5,12 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 export default function ProfilePage() {
-  const { isError, isLoading, isSuccess, data } = useQuery({
-    queryKey: ['user_data'],
+  const email = window?.localStorage?.getItem('email');
+
+  const { isError, isLoading, data } = useQuery({
+    queryKey: [email],
     queryFn: async () => {
-      const data = await axios_instance.get(
-        `api/users/profile?email=${'anirudh2270@gmail.com'}`
-      );
+      const data = await axios_instance.get(`api/users/profile?email=${email}`);
 
       return data;
     },
@@ -51,6 +51,7 @@ export default function ProfilePage() {
               <div className='bg-white shadow rounded-lg p-6'>
                 <div className='flex flex-col items-center'>
                   <img
+                    alt='Prfile Pic'
                     src='https://randomuser.me/api/portraits/men/94.jpg'
                     className='w-32 h-32 bg-gray-300 rounded-full mb-4 shrink-0'
                   />
@@ -104,7 +105,7 @@ export default function ProfilePage() {
                   <a
                     className='text-gray-700 hover:text-orange-600'
                     aria-label='Visit TrendyMinds LinkedIn'
-                    href
+                    href='#'
                     target='_blank'
                   >
                     <svg
@@ -121,7 +122,7 @@ export default function ProfilePage() {
                   <a
                     className='text-gray-700 hover:text-orange-600'
                     aria-label='Visit TrendyMinds YouTube'
-                    href
+                    href='#'
                     target='_blank'
                   >
                     <svg
@@ -138,7 +139,7 @@ export default function ProfilePage() {
                   <a
                     className='text-gray-700 hover:text-orange-600'
                     aria-label='Visit TrendyMinds Facebook'
-                    href
+                    href='#'
                     target='_blank'
                   >
                     <svg
@@ -155,7 +156,7 @@ export default function ProfilePage() {
                   <a
                     className='text-gray-700 hover:text-orange-600'
                     aria-label='Visit TrendyMinds Instagram'
-                    href
+                    href='#'
                     target='_blank'
                   >
                     <svg
@@ -172,7 +173,7 @@ export default function ProfilePage() {
                   <a
                     className='text-gray-700 hover:text-orange-600'
                     aria-label='Visit TrendyMinds Twitter'
-                    href
+                    href='#'
                     target='_blank'
                   >
                     <svg
